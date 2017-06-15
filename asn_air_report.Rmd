@@ -1,0 +1,287 @@
+---
+title: "Report of air monitoring research during Mar"
+author: "Gong Cheng"
+date: "2017-6-12"
+output:
+  html_document: default
+  pdf_document:
+    fig_height: 4
+    fig_width: 6.5
+  word_document: default
+---
+
+```{r eval=TRUE, echo=FALSE, warning=FALSE, message=FALSE}
+load("E:/R/asno2/.RData")
+
+library(ggplot2)
+library(latex2exp)
+library(multcomp)
+```
+
+## 1.The parameter statistics of air data during research
+
+Here are some statistics of air data in Olympic Forest Park, 6 research points had set in park. The measurement interval of air data was about 30min for every points(except 2017-5-22).
+
+### Research points
+
+![Research points](E:/R/asno2/locations.jpg)
+
+### At location *assd*
+date:2017-5-22
+
+```{r eval=TRUE, echo=FALSE}
+summary(assd5.22[,2:5])
+```
+
+date:2017-5-23
+
+```{r eval=TRUE, echo=FALSE}
+summary(assd5.23[, 2:5])
+```
+date:2017-5-24
+
+```{r eval=TRUE, echo=FALSE}
+summary(assd5.24[, 2:5])
+```
+date:2017-5-25
+
+```{r eval=TRUE, echo=FALSE}
+summary(assd5.25[, 2:5])
+```
+
+date:2017-5-27
+
+```{r eval=TRUE, echo=FALSE}
+summary(assd5.27[, 2:5])
+```
+
+date:2017-6-8
+
+```{r eval=TRUE, echo=FALSE}
+summary(assd6.8[, 2:5])
+```
+
+### At location *ayxl*
+
+date:2017-5-23
+
+```{r eval=TRUE, echo=FALSE}
+summary(ayxl5.23[, 2:5])
+```
+
+date:2017-5-24
+
+```{r eval=TRUE, echo=FALSE}
+summary(ayxl5.24[, 2:5])
+```
+
+date:2017-5-25
+
+```{r eval=TRUE, echo=FALSE}
+summary(ayxl5.25[, 2:5])
+```
+
+date:2017-5-27
+
+```{r eval=TRUE, echo=FALSE}
+summary(ayxl5.27[, 2:5])
+```
+
+date:2017-6-8
+
+```{r eval=TRUE, echo=FALSE}
+summary(ayxl6.8[, 2:5])
+```
+
+### At location *nyxm*
+
+date:2017-5-24
+
+```{r eval=TRUE, echo=FALSE}
+summary(nyxm5.24.r[, 3:6])
+```
+
+date:2017-5-25
+
+```{r eval=TRUE, echo=FALSE}
+summary(nyxm5.25.r[, 3:6])
+```
+
+date:2017-5-27
+
+```{r eval=TRUE, echo=FALSE}
+summary(nyxm5.27.r[, 3:6])
+```
+
+date:2017-6-8
+
+```{r eval=TRUE, echo=FALSE}
+summary(nyxm6.8[, 2:5])
+```
+
+## 2. Summary data by boxplot
+
+Using boxplot to exhibit the difference between locations and date
+
+### At location *assd*
+
+First, summary all the data at location *assd*
+
+```{r eval=TRUE,  echo=FALSE}
+summary(assd_mar_all)
+```
+The boxplot show the NO2 concentration in diffrent days at location *assd*
+
+```{r figure2, eval=TRUE, echo=FALSE}
+fig = ggplot(data = assd_mar_all, aes(x=date.label, y=NO2, fill=date.label))+geom_boxplot()
+fig = fig + labs(title = TeX('Figure 2:$NO_{2}$ Concentration at \\textit{assd}')) + xlab('Date') + ylab(TeX('$NO_{2}$ $(\\mu g \\cdot m^{-3})$'))
+#fig = fig + geom_line(data=assd_mar_mean, aes(x=date.label, y=NO2, group=date.label))
+fig
+```
+
+### At location *ayxl*
+
+As usual, summary all the data at location *ayxl*
+
+```{r eval=TRUE,  echo=FALSE}
+summary(ayxl_mar_all)
+```
+The boxplot show the NO2 concentration in diffrent days at location *ayxl*
+
+```{r eval=TRUE, echo=FALSE}
+fig = ggplot(data = ayxl_mar_all, aes(x=date.label, y=NO2, fill=date.label))+geom_boxplot()
+fig = fig + labs(title = TeX('Figure 3:$NO_{2}$ Concentration at \\textit{ayxl}')) + xlab('Date') + ylab(TeX('$NO_{2}$ $(\\mu g \\cdot m^{-3})$'))
+fig
+```
+
+### At location *nyxm*
+
+Here are some summary statistics of air data at location *nyxm*
+
+```{r eval=TRUE, echo=FALSE}
+summary(nyxm_mar_all[, 3:7])
+```
+The boxplot show the NO2 concentration in diffrent days at location *nyxm*
+
+```{r eval=TRUE, echo=FALSE}
+fig = ggplot(data = nyxm_mar_all, aes(x=date.label, y=NO2_C, fill=date.label)) + geom_boxplot()
+fig = fig + labs(title = TeX('Figure 4:$NO_{2}$ Concentration at \\textit{nyxm}')) + xlab('Date') + ylab(TeX('$NO_{2}$ $(\\mu g \\cdot m^{-3})$'))
+fig
+```
+
+### Comparing between locations
+
+We summary all the data in one table, that's the result:
+
+```{r eval=TRUE, echo=FALSE}
+summary(asno_mar_all)
+```
+We also use boxplot to show the difference of Nirogen dioxide concentration between three locations
+
+```{r eval=TRUE, echo=FALSE}
+fig = ggplot(data = asno_mar_all, aes(x=Location, y=NO2, fill=Location)) + geom_boxplot()
+fig = fig + labs(title = TeX('Figure 5:$NO_{2}$ Concentration between different Locations')) + xlab('Location') + ylab(TeX('$NO_{2}$ $(\\mu g \\cdot m^{-3})$'))
+fig
+```
+
+
+## 3. Multiple comparisons  with air data
+
+Multiple comparisons can test and caculate the true diffence of multiple data set. Here, we use this statistic method to reveal the relationship between locations and NO2 concentration.
+
+### Using anova model to verify the difference effect of locations
+
+First, We use anova model to verify the difference effect of locations. This table below is result
+
+```{r eval=TRUE, echo=FALSE}
+asno_mar_all$Location <- as.factor(asno_mar_all$Location)
+asno_mar_all_aov <- aov(NO2 ~ Location, data = asno_mar_all)
+summary(asno_mar_all_aov)
+```
+The P value of *Location* is less than 0.01, It seems there were some diffence of NO2 concentration between 3 locations.
+
+### Using multipe comparisons to estimate the difference value of NO2 concentration between 3 locations
+
+We use Tukey HSD methd to estimate the difference value between 3 locations, here are results:
+
+```{r eval=TRUE, echo=FALSE}
+asno_mar_all_tukey <- glht(asno_mar_all_aov, linfct=mcp(Location="Tukey"), alternative = 'two.sided')
+summary(asno_mar_all_tukey)
+```
+
+The result is clear that 3 locations has different NO2 concentration according to Tukey HSD test, We can conclude that the location *nyxm* has highest NO2 concentration and location *assd* has lowest NO2 concentration. Location *ayxl* shows high P value in *ayxl - assd == 0*  linear hypotheses test, it seems the difference of NO2 concentration between location *ayxl* and *assd* is not significant
+
+These figures below show the result of Tukey HSD test.
+
+Here is the 95% confidence level of mean value with 3 pair-wise comparisons.
+
+```{r eval=TRUE, echo=FALSE, warning=FALSE}
+tukey_result <- TukeyHSD(asno_mar_all_aov)$Location
+tukey_result <- as.data.frame(tukey_result)
+pair <- rownames(tukey_result)
+rownames(tukey_result) <- c(1:nrow(tukey_result))
+tukey_result <- cbind(pair, tukey_result)
+fig <- ggplot(data=tukey_result, aes(y=diff,x=pair, colour=pair))
+fig <- fig + geom_errorbar(aes(ymin=lwr,ymax=upr), width=0.1)
+fig <- fig + geom_point(aes(ymin=lwr,ymax=upr))
+fig <- fig + geom_hline(yintercept=0)
+fig <- fig + labs(title = "Figure 6: 95% CI of difference")
+fig
+```
+
+Here is result of Tukey HSD test.
+
+all data
+
+```{r eval=TRUE, echo=FALSE}
+fig = ggplot(data = asno_mar_all, aes(x=Location, y=NO2, fill=Location)) + geom_boxplot()
+fig = fig + labs(title = TeX('Figure 7:$NO_{2}$ Concentration between different Locations')) + xlab('Location') + ylab(TeX('$NO_{2}$ $(\\mu g \\cdot m^{-3})$'))
+fig = fig + geom_text(data=cld_result, aes(x=Location, y=NO2, label=text))
+fig
+```
+
+date:5-24, 5-25 and 5-27
+
+```{r eval=TRUE, echo=FALSE}
+asno_524_all_aov <- aov(NO2 ~ Location, data = asno_524_all)
+asno_524_all_tukey <- glht(asno_524_all_aov, linfct = mcp(Location="Tukey"))
+
+asno_525_all_aov <- aov(NO2 ~ Location, data = asno_525_all)
+asno_525_all_tukey <- glht(asno_525_all_aov, linfct = mcp(Location="Tukey"))
+
+asno_527_all_aov <- aov(NO2 ~ Location, data = asno_527_all)
+asno_527_all_tukey <- glht(asno_527_all_aov, linfct = mcp(Location="Tukey"))
+
+
+fig3 <- qplot(x=Location, y=NO2, data=asno_inter_all, facets=.~date.label, geom='boxplot', fill=Location)
+fig3 <- fig3 + geom_text(data=cld_inter, aes(x=Location,y=NO2,label=text))
+fig3 = fig3 + labs(title = TeX('Figure 8:$NO_{2}$ Concentration between different Locations')) + xlab('Location') + ylab(TeX('$NO_{2}$ $(\\mu g \\cdot m^{-3})$'))
+fig3
+```
+
+## 4. Compare the traffic flow between *nyxm* and *ayxl*
+
+We also count the traffic flow during the 30min interval at traffic lane *nyxm* and *ayxl*, here is the result, displayed with boxplot and line plot
+
+```{r eval=TRUE, echo=FALSE}
+trafficmean <- qplot(x=TIME, y=AMOUNT, data=asno_traf_mean, facets=.~Location)
+trafficmean <- trafficmean + geom_boxplot(data=asno_traf_all, aes(x=TIME, y=AMOUNT, group=TIME, fill=TIME))
+trafficmean <- trafficmean + geom_point(colour='red')+geom_line(size=1)
+trafficmean <- trafficmean + labs(title="Figure 8:Traffic flow in 30min")+ xlab("Time(min)") + ylab("Amount")
+trafficmean
+```
+
+The plot shows the trend of traffic flow, we can find two locations exihibit similar rate of increase momentum in 30 min
+
+We also tested the pair-wise comparison of traffic flow in 30 min, there is no significant difference between two location. The result has showed below
+
+```{r eval=TRUE, echo=FALSE}
+asno_traf_30_aov <- aov(AMOUNT ~ Location, data = asno_traf_30)
+tukey_traffic <- TukeyHSD(asno_traf_30_aov)$Location
+fig9 <- ggplot(asno_traf_30, aes(x=Location, y=AMOUNT, fill=Location))
+fig9 <- fig9 + geom_boxplot()
+text_traf <- data.frame(Location=c('ayxl', 'nyxm'), AMOUNT=c(1640, 1420), label=c('a', 'a'))
+fig9 <- fig9 + geom_text(data=text_traf, aes(x=Location,y=AMOUNT, label=label))
+fig9 <- fig9 + labs(title="Figure 9:Sum of traffic flow in 30 min")
+fig9
+```
